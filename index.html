@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>나의 프롬프트 웹사이트</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        text-align: center;
+      }
+      textarea {
+        width: 80%;
+        height: 100px;
+        margin-bottom: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>AI 프롬프트 실행기</h1>
+    <p>여기에 프롬프트를 입력하고 버튼을 누르세요.</p>
+    <textarea placeholder="질문을 입력하세요..."></textarea><br />
+    <button
+      onclick="
+        alert(
+          '프롬프트가 전송되었습니다! (실제 AI 연동은 추가 작업이 필요합니다)',
+        )
+      "
+    >
+      전송하기
+    </button>
+  </body>
+</html>
