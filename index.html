@@ -1,40 +1,263 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>나의 프롬프트 웹사이트</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>협력사 가입고(ASN) 등록 시스템</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        text-align: center;
-      }
-      textarea {
-        width: 80%;
-        height: 100px;
-        margin-bottom: 10px;
-      }
-      button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
+        :root {
+            --primary-color: #1e3d59;
+            --secondary-color: #17b978;
+            --background-color: #f5f7fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header p {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        /* 자재 품목 테이블 스타일 */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f2f5f8;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .qty-input {
+            width: 80px;
+            padding: 6px;
+            text-align: right;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn-container {
+            text-align: center;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #13293d;
+        }
+
+        .btn-search {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
     </style>
-  </head>
-  <body>
-    <h1>AI 프롬프트 실행기</h1>
-    <p>여기에 프롬프트를 입력하고 버튼을 누르세요.</p>
-    <textarea placeholder="질문을 입력하세요..."></textarea><br />
-    <button
-      onclick="
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>협력사 자재 가입고(ASN) 등록</h1>
+        <p>자동차부품회사 납품 전, 사전 입고 정보를 입력해 주세요.</p>
+    </header>
+
+    <form id="asnForm" onsubmit="submitForm(event)">
+        <div class="section-title">1. 운송 및 납품 정보</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="vendorName">업체명</label>
+                <input type="text" id="vendorName" value="(주)한국정밀" readonly style="background:#eee;">
+            </div>
+            <div class="form-group">
+                <label for="poNumber">발주(P/O) 번호 조회</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="poNumber" placeholder="PO-20260626-01" style="flex: 1;">
+                    <button type="button" class="btn-search" onclick="alert('발주서 정보를 동기화했습니다.')">조회</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="deliveryDate">입고 예정일시</label>
+                <input type="datetime-local" id="deliveryDate" required>
+            </div>
+            <div class="form-group">
+                <label for="carNumber">납품 차량번호</label>
+                <input type="text" id="carNumber" placeholder="예: 경기86아1234" required>
+            </div>
+            <div class="form-group">
+                <label for="driverName">운전자 연락처</label>
+                <input type="text" id="driverName" placeholder="예: 홍길동 (010-1234-5678)">
+            </div>
+        </div>
+
+        <div class="section-title">2. 납품 품목 명세 (BOM 연계 항목)</div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>선택</th>
+                        <th>품번 (Part No.)</th>
+                        <th>품명 (Part Name)</th>
+                        <th>발주 잔량</th>
+                        <th>금회 납품수량</th>
+                        <th>포 단위 (Box)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" checked></td>
+                        <td><strong>BRK-FRONT-01</strong></td>
+                        <td>브레이크 패드 (앞)</td>
+                        <td>1,500 EA</td>
+                        <td><input type="number" class="qty-input" value="500"></td>
+                        <td>25 Box</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" checked></td>
+                        <td><strong>BOLT-M08-L20</strong></td>
+                        <td>조립용 플랜지 볼트</td>
+                        <td>5,000 EA</td>
+                        <td><input type="number" class="qty-input" value="2000"></td>
+                        <td>10 Box</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td><strong>SST-GUIDE-R</strong></td>
+                        <td>가이드 레일 (우)</td>
+                        <td>300 EA</td>
+                        <td><input type="number" class="qty-input" value="0"></td>
+                        <td>0 Box</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="btn-container">
+            <button type="submit" class="btn-submit">가입고 정보 전송 (ASN 등록)</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 오늘 날짜 및 시간 기본값 세팅
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('deliveryDate').value = now.toISOString().slice(0,16);
+
+    function submitForm(event) {
+        event.preventDefault();
+        
+        // 실제 현업 프로세스 안내
         alert(
-          '프롬프트가 전송되었습니다! (실제 AI 연동은 추가 작업이 필요합니다)',
-        )
-      "
-    >
-      전송하기
-    </button>
-  </body>
+            "가입고(ASN) 등록이 완료되었습니다!\n\n" +
+            "[MES 연계 프로세스 시나리오]\n" +
+            "1. 외부 업체가 입력한 이 데이터가 내부 MSSQL DB의 '가입고 임시 테이블(INTERFACE)'로 전송됩니다.\n" +
+            "2. 내부 자재과 담당자 MES 화면에 '가입고 현황'으로 실시간 팝업이 뜹니다.\n" +
+            "3. 차량이 정문에 도착하면 바코드를 스캔하여 '실제 입고(정입고)' 처리로 전환됩니다."
+        );
+    }
+</script>
+
+</body>
 </html>
