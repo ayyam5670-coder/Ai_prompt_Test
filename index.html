@@ -3,259 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>협력사 가입고(ASN) 등록 시스템</title>
+    <title>협력사 가입고 시스템 (포탈)</title>
     <style>
         :root {
             --primary-color: #1e3d59;
             --secondary-color: #17b978;
+            --sidebar-width: 240px;
             --background-color: #f5f7fa;
-            --text-color: #333;
         }
 
         body {
-            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
+            font-family: 'Malgun Gothic', sans-serif;
             margin: 0;
             padding: 0;
+            background-color: var(--background-color);
+            height: 100vh;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 30px;
+        /* 1. 로그인 화면 스타일 */
+        #loginWrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        header {
-            text-align: center;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            color: var(--primary-color);
-            margin: 0;
-            font-size: 24px;
-        }
-
-        header p {
-            color: #666;
-            margin: 5px 0 0 0;
-            font-size: 14px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary-color);
-            padding-left: 8px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group input, .form-group select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .form-group input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-
-        /* 자재 품목 테이블 스타일 */
-        .table-container {
-            overflow-x: auto;
-            margin-bottom: 30px;
-        }
-
-        table {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        th {
-            background-color: #f2f5f8;
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        .qty-input {
-            width: 80px;
-            padding: 6px;
-            text-align: right;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .btn-container {
+            max-width: 360px;
             text-align: center;
         }
 
-        .btn-submit {
+        .login-box h2 { color: var(--primary-color); margin-bottom: 25px; }
+        .login-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .btn-login { width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+
+        /* 2. 메인 시스템 레이아웃 (로그인 후 표시) */
+        #mainContainer {
+            display: none; /* 초기에는 숨김 */
+            height: 100vh;
+        }
+
+        /* 왼쪽 사이드바 메뉴 */
+        .sidebar {
+            width: var(--sidebar-width);
             background-color: var(--primary-color);
             color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 16px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding-top: 20px;
+        }
+
+        .sidebar .logo {
+            text-align: center;
+            padding: 10px 0 20px 0;
+            font-size: 18px;
             font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
+            border-bottom: 1px solid #2a5275;
         }
 
-        .btn-submit:hover {
-            background-color: #13293d;
+        .menu-group { padding: 15px 0 0 15px; }
+        .menu-title { font-size: 13px; color: #8baac7; font-weight: bold; margin-bottom: 10px; }
+        .menu-item { 
+            padding: 10px 15px; 
+            color: #e0e0e0; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: block;
+            border-radius: 4px 0 0 4px;
+        }
+        .menu-item:hover, .menu-item.active { background-color: #2a5275; color: white; font-weight: bold; }
+
+        /* 오른쪽 메인 콘텐츠 영역 */
+        .content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            box-sizing: border-box;
+            height: 100%;
+            overflow-y: auto;
         }
 
-        .btn-search {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 5px;
-        }
+        .page-panel { display: none; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .page-panel.active { display: block; }
+
+        /* 폼 & 테이블 공통 공통 스타일 */
+        .section-title { font-size: 18px; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; border-left: 4px solid var(--primary-color); padding-left: 8px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 14px; margin-bottom: 5px; font-weight: bold; }
+        .form-group input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; font-size: 14px; }
+        th { background-color: #f2f5f8; color: var(--primary-color); }
+        .btn-submit { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; font-size: 15px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        
+        /* 입고상태 라벨 */
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .status-ready { background-color: #ffeeba; color: #856404; }
+        .status-complete { background-color: #d4edda; color: #155724; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>협력사 자재 가입고(ASN) 등록</h1>
-        <p>자동차부품회사 납품 전, 사전 입고 정보를 입력해 주세요.</p>
-    </header>
+<div id="loginWrapper">
+    <div class="login-box">
+        <h2>협력사 시스템 로그인</h2>
+        <p style="font-size: 13px; color: #777; margin-bottom: 20px;">(테스트용: 아무 아이디나 치고 로그인하세요)</p>
+        <input type="text" id="userId" class="login-input" placeholder="협력사 코드 또는 ID">
+        <input type="password" id="userPw" class="login-input" placeholder="비밀번호">
+        <button class="btn-login" onclick="handleLogin()">로그인</button>
+    </div>
+</div>
 
-    <form id="asnForm" onsubmit="submitForm(event)">
-        <div class="section-title">1. 운송 및 납품 정보</div>
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="vendorName">업체명</label>
-                <input type="text" id="vendorName" value="(주)한국정밀" readonly style="background:#eee;">
-            </div>
-            <div class="form-group">
-                <label for="poNumber">발주(P/O) 번호 조회</label>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="poNumber" placeholder="PO-20260626-01" style="flex: 1;">
-                    <button type="button" class="btn-search" onclick="alert('발주서 정보를 동기화했습니다.')">조회</button>
+<div id="mainContainer">
+    <div class="sidebar">
+        <div class="logo">🚗 자재관리 포탈</div>
+        
+        <div class="menu-group">
+            <div class="menu-title">📦 가입고 관리</div>
+            <div id="menuRegister" class="menu-item active" onclick="switchPage('register')">ㆍ가입고 등록</div>
+            <div id="menuHistory" class="menu-item" onclick="switchPage('history')">ㆍ가입고 내역</div>
+        </div>
+        
+        <div class="menu-group" style="position: absolute; bottom: 20px; width: 100%;">
+            <div class="menu-item" onclick="handleLogout()" style="color: #ff6b6b;">🔒 로그아웃</div>
+        </div>
+    </div>
+
+    <div class="content">
+        
+        <div id="pageRegister" class="page-panel active">
+            <div class="section-title">가입고(ASN) 등록</div>
+            <form onsubmit="alert('가입고 정보가 전송되었습니다. 내역 탭에서 확인하세요.'); switchPage('history'); return false;">
+                <div class="form-grid">
+                    <div class="form-group"><label>업체명</label><input type="text" value="(주)한국정밀" readonly style="background:#eee;"></div>
+                    <div class="form-group"><label>입고 예정일시</label><input type="datetime-local" id="devDate" required></div>
+                    <div class="form-group"><label>납품 차량번호</label><input type="text" placeholder="경기86아1234" required></div>
+                    <div class="form-group"><label>운전자 연락처</label><input type="text" placeholder="홍길동 (010-1234-5678)"></div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="deliveryDate">입고 예정일시</label>
-                <input type="datetime-local" id="deliveryDate" required>
-            </div>
-            <div class="form-group">
-                <label for="carNumber">납품 차량번호</label>
-                <input type="text" id="carNumber" placeholder="예: 경기86아1234" required>
-            </div>
-            <div class="form-group">
-                <label for="driverName">운전자 연락처</label>
-                <input type="text" id="driverName" placeholder="예: 홍길동 (010-1234-5678)">
-            </div>
+                
+                <h3 style="font-size: 15px; margin-top:20px;">납품 품목 선택</h3>
+                <table>
+                    <thead>
+                        <tr><th>선택</th><th>품번</th><th>품명</th><th>금회 납품수량</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><input type="checkbox" checked></td><td>BRK-FRONT-01</td><td>브레이크 패드 (앞)</td><td><input type="number" value="500" style="width:70px; text-align:right;"></td></tr>
+                        <tr><td><input type="checkbox" checked></td><td>BOLT-M08-L20</td><td>조립용 플랜지 볼트</td><td><input type="number" value="2000" style="width:70px; text-align:right;"></td></tr>
+                    </tbody>
+                </table>
+                <div style="text-align: center; margin-top: 25px;">
+                    <button type="submit" class="btn-submit">가입고 정보 등록</button>
+                </div>
+            </form>
         </div>
 
-        <div class="section-title">2. 납품 품목 명세 (BOM 연계 항목)</div>
-        <div class="table-container">
+        <div id="pageHistory" class="page-panel">
+            <div class="section-title">가입고 등록 내역 현황</div>
+            <p style="font-size: 14px; color: #666;">우리 회사에서 등록한 사전 입고 신청 목록과 내부 MES 입고 처리 상태입니다.</p>
+            
             <table>
                 <thead>
                     <tr>
-                        <th>선택</th>
-                        <th>품번 (Part No.)</th>
-                        <th>품명 (Part Name)</th>
-                        <th>발주 잔량</th>
-                        <th>금회 납품수량</th>
-                        <th>포 단위 (Box)</th>
+                        <th>등록일자</th>
+                        <th>입고예정일</th>
+                        <th>차량번호</th>
+                        <th>품목건수</th>
+                        <th>총 수량</th>
+                        <th>진행 상태</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="checkbox" checked></td>
-                        <td><strong>BRK-FRONT-01</strong></td>
-                        <td>브레이크 패드 (앞)</td>
-                        <td>1,500 EA</td>
-                        <td><input type="number" class="qty-input" value="500"></td>
-                        <td>25 Box</td>
+                        <td>2026-06-26</td>
+                        <td>2026-06-26 17:00</td>
+                        <td>경기86아1234</td>
+                        <td>2건</td>
+                        <td>2,500</td>
+                        <td><span class="status-badge status-ready">대기 (정문미통과)</span></td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox" checked></td>
-                        <td><strong>BOLT-M08-L20</strong></td>
-                        <td>조립용 플랜지 볼트</td>
-                        <td>5,000 EA</td>
-                        <td><input type="number" class="qty-input" value="2000"></td>
-                        <td>10 Box</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td><strong>SST-GUIDE-R</strong></td>
-                        <td>가이드 레일 (우)</td>
-                        <td>300 EA</td>
-                        <td><input type="number" class="qty-input" value="0"></td>
-                        <td>0 Box</td>
+                        <td>2026-06-25</td>
+                        <td>2026-06-25 10:30</td>
+                        <td>서울12가5678</td>
+                        <td>1건</td>
+                        <td>1,000</td>
+                        <td><span class="status-badge status-complete">입고완료 (MES반영)</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="btn-container">
-            <button type="submit" class="btn-submit">가입고 정보 전송 (ASN 등록)</button>
-        </div>
-    </form>
+    </div>
 </div>
 
 <script>
-    // 오늘 날짜 및 시간 기본값 세팅
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    document.getElementById('deliveryDate').value = now.toISOString().slice(0,16);
-
-    function submitForm(event) {
-        event.preventDefault();
+    // 1. 로그인 처리 함수 (시뮬레이션)
+    function handleLogin() {
+        const id = document.getElementById('userId').value;
+        if(!id) { alert('아이디를 입력해주세요.'); return; }
         
-        // 실제 현업 프로세스 안내
-        alert(
-            "가입고(ASN) 등록이 완료되었습니다!\n\n" +
-            "[MES 연계 프로세스 시나리오]\n" +
-            "1. 외부 업체가 입력한 이 데이터가 내부 MSSQL DB의 '가입고 임시 테이블(INTERFACE)'로 전송됩니다.\n" +
-            "2. 내부 자재과 담당자 MES 화면에 '가입고 현황'으로 실시간 팝업이 뜹니다.\n" +
-            "3. 차량이 정문에 도착하면 바코드를 스캔하여 '실제 입고(정입고)' 처리로 전환됩니다."
-        );
+        // 로그인 창 숨기고 메인 시스템 보여주기
+        document.getElementById('loginWrapper').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'flex';
+        
+        // 오늘 날짜 세팅
+        document.getElementById('devDate').value = new Date().toISOString().slice(0,16);
+    }
+
+    // 2. 로그아웃 처리 함수
+    function handleLogout() {
+        document.getElementById('mainContainer').style.display = 'none';
+        document.getElementById('loginWrapper').style.display = 'flex';
+    }
+
+    // 3. 사이드바 메뉴 전환 함수
+    function switchPage(pageType) {
+        // 모든 페이지와 메뉴 초기화
+        document.getElementById('pageRegister').classList.remove('active');
+        document.getElementById('pageHistory').classList.remove('active');
+        document.getElementById('menuRegister').classList.remove('active');
+        document.getElementById('menuHistory').classList.remove('active');
+
+        // 선택한 페이지 활성화
+        if(pageType === 'register') {
+            document.getElementById('pageRegister').classList.add('active');
+            document.getElementById('menuRegister').classList.add('active');
+        } else if(pageType === 'history') {
+            document.getElementById('pageHistory').classList.add('active');
+            document.getElementById('menuHistory').classList.add('active');
+        }
     }
 </script>
 
